@@ -26,3 +26,5 @@ class ActivationView(APIView):
         user.activation_code = ''
         user.save()
         return Response('Successfully activated', status=200)
+
+

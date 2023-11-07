@@ -42,9 +42,9 @@ class FavouritesSerializer(ModelSerializer):
         return favourite
 
     def validate(self, attrs):
-        flight = attrs.get('flight')
+        car = attrs.get('car')
         user = self.context.get('request').user
-        if self.Meta.model.objects.filter(flight=flight, author=user).exists():
+        if self.Meta.model.objects.filter(car=car, author=user).exists():
             raise serializers.ValidationError(
                 'You already liked it'
             )

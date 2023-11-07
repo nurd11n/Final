@@ -6,4 +6,6 @@ pillow
 python-slugify
 djangorestframework-simplejwt
 python-decouple
-
+folium
+leaflet
+polyline
