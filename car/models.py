@@ -6,13 +6,13 @@ DriverUser = get_user_model()
 
 
 class Category(models.Model):
-    place_class = models.CharField(max_length=20, primary_key=True)
+    car_class = models.CharField(max_length=20, primary_key=True)
 
 
 class Car(models.Model):
-    driver = models.ForeignKey(User, related_name='car', blank=True)
+    driver = models.ForeignKey(DriverUser, related_name='car', blank=True, on_delete=models.SET_NULL, null=True)
     model = models.CharField(max_length=40)
-    mileage = models.IntegerField(max_length=20)
+    mileage = models.IntegerField()
     color = models.CharField(max_length=20)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='car')

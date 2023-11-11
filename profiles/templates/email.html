@@ -16,20 +16,11 @@
                 {{ email }}
             </p>
             {{ activation_code }}
-            {{ first_name }}
-            {{ last_name }}
-            {{ driver_license }}
-            {{ car }}
             <form method="post">
                 <a class="text-center verify-button"
-                href="{{ domain }}{% url 'activate-driver' email activation_code %}">
+                href="{{ domain }}{% url 'activate' email activation_code %}">
                     <button type="button"
                             class="btn">Verify account</button>
-                </a>
-                <a class="text-center verify-button"
-                href="{{ domain }}{% url 'doesnotfit' email %}">
-                    <button type="button"
-                            class="btn">Account doesn't fit</button>
                 </a>
             </form>
             </p>

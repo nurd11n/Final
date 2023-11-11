@@ -3,13 +3,15 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
 
-def send_application(first_name, last_name, license, email):
+def send_application_email(first_name, last_name, driver_license, car, email, activation_code):
     context = {
         'text_detail': 'New application',
         'first name': first_name,
         'last name': last_name,
-        'license': license,
+        'license': driver_license,
+        'car': car,
         'email': email,
+        'activation code': activation_code,
         'domain': 'http://localhost:8000',
     }
 
@@ -24,5 +26,5 @@ def send_application(first_name, last_name, license, email):
         fail_silently=False,
     )
 
-def send_confirm(first_name, last_name, email):
-    ...
+# def send_confirm(first_name, last_name, email):
+#     ...

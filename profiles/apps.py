@@ -1,10 +1,9 @@
 from django.apps import AppConfig
 
 
-class DriverAccountConfig(AppConfig):
+class ProfilesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'driver_account'
+    name = 'profiles'
 
     def ready(self):
-        import driver_account.models
-
+        import profiles.models

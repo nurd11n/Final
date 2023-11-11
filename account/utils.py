@@ -23,6 +23,3 @@ def send_activation_code(email, activation_code):
         fail_silently=False,
     )
 
-
-
-

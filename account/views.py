@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from .serializers import RegisterSerializer
+from .serializers import *
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
@@ -9,22 +10,57 @@ User = get_user_model()
 
 
 class RegisterView(APIView):
-    @swagger_auto_schema(request_body=RegisterSerializer())
+    @swagger_auto_schema(request_body=RegisterSerializer)
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response('Successfully registered', status=201)
+        return Response(
+            'You have successfully registered.'
+            'An activation email has been sent to you',
+            status=status.HTTP_201_CREATED
+        )
 
 
 class ActivationView(APIView):
     def get(self, request, email, activation_code):
-        user = User.objects.filter(email=email, activation_code=activation_code).first()
-        if not user:
-            return Response('User does not exist', status=400)
-        user.is_active = True
-        user.activation_code = ''
-        user.save()
-        return Response('Successfully activated', status=200)
+        try:
+            user = User.objects.get(email=email, activation_code=activation_code)
+            user.is_active = True
+            user.activation_code = ""
+            user.save()
+            return Response(
+                {"Message": "Successfully activated."},
+                status=status.HTTP_200_OK
+            )
+        except User.DoesNotExist:
+            return Response(
+                {"Message": "Wrong email."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(request_body=ChangePasswordSerializer)
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response('Password changed successfully', status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteAccountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(request_body=DeleteAccountSerializer)
+    def post(self, request):
+        password = request.data.get('password')
+        if not request.user.check_password(password):
+            return Response({'error': 'Invalid password'}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.delete()
+        return Response({'message': 'Account deleted successfully'}, status=status.HTTP_200_OK)
