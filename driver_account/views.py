@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 
 class DriverRegistration(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     def post(self, request):
         serializer = DriverRegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -17,7 +17,7 @@ class DriverRegistration(APIView):
 
 
 class GiveCarViewSet(APIView):
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
     def post(self, request):
         serializer = GiveCarSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -26,7 +26,7 @@ class GiveCarViewSet(APIView):
 
 
 class ActivationDriverView(APIView):
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
     def get(self, request, email, activation_code):
         try:
             user = DriverUser.objects.get(email=email, activation_code=activation_code)

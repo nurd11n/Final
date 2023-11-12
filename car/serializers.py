@@ -1,9 +1,5 @@
 from rest_framework import serializers
 from .models import Category, Car
-from django.contrib.auth import get_user_model
-
-
-User = get_user_model()
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -14,6 +10,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class CarSerializer(serializers.ModelSerializer):
+    driver = serializers.ReadOnlyField(source='driver.name')
     class Meta:
         model = Car
         fields = '__all__'

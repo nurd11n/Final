@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'account',
     'car',
     # 'profiles',
-    'driver_account',
+    # 'driver_account',
 ]
 
 MIDDLEWARE = [

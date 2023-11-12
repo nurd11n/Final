@@ -38,8 +38,8 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('swagger/', schema_view.with_ui()),
-    path('api/v1/account/', include('account.urls')),
-    path('driver/', include('driver_account.urls')),
+    path('account/', include('account.urls')),
+    # path('driver/', include('driver_account.urls')),
     # path('', include('profiles.urls')),
     path('', include('car.urls')),
 ]

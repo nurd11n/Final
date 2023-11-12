@@ -8,13 +8,6 @@ from car.models import Car
 User = get_user_model()
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{self.user.email}'
-
-
 class DriverUserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.EmailField(unique=True, primary_key=True)
@@ -31,13 +24,15 @@ class DriverUserProfile(models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name} - {self.car}'
+#
+#
+# @receiver(post_save, sender=User)
+# def create_profile(sender, instance, created, **kwargs):
+#     print(f'User {instance} was created {created}')
+#     if created:
+#         if instance.is_driver == True:
+#             DriverUserProfile.objects.create(user=instance)
+#         else:
+#             UserProfile.objects.create(user=instance)
 
 
-@receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
-    print(f'User {instance} was created {created}')
-    if created:
-        if instance.is_driver == True:
-            DriverUserProfile.objects.create(user=instance)
-        else:
-            UserProfile.objects.create(user=instance)
