@@ -1,11 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from car.models import Car
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.crypto import get_random_string
 import re
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
+from car.models import Car
 
 
 class UserManager(BaseUserManager):
@@ -53,12 +53,6 @@ class User(AbstractUser):
         code = get_random_string(length=10)
         self.activation_code = code
 
-    def clean(self):
-        if self.phone_number and not re.match(r'^\+?[0-9]+$', self.phone_number):
-            self.add_error('phone_number', _('Please enter a valid phone number'))
-            raise ValidationError(_('Invalid phone number format'))
-        super().clean()
-
 
 class DriverUser(User):
     phone_number = models.CharField(max_length=15, unique=True)
@@ -69,6 +63,12 @@ class DriverUser(User):
 
     def __str__(self):
         return f'{self.id} - {self.email} - {self.car}'
+
+    def clean(self):
+        if self.phone_number and not re.match(r'^\+?[0-9]+$', self.phone_number):
+            self.add_error('phone_number', _('Please enter a valid phone number'))
+            raise ValidationError(_('Invalid phone number format'))
+        super().clean()
 
     # def save(self, *args, **kwargs):
     #     if self.is_driver == True:
