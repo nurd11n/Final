@@ -30,6 +30,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'account.User'
+ACCOUNT_UNIQUE_EMAIL = True
 
 # Application definition
 
@@ -47,8 +48,7 @@ INSTALLED_APPS = [
     #apps
     'account',
     'car',
-    # 'profiles',
-    # 'driver_account',
+    'chat',
 ]
 
 MIDDLEWARE = [

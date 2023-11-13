@@ -1,5 +1,5 @@
 from django.db import models
-from account.models import DriverUser
+# from profiles.models import DriverProfile
 
 
 class Category(models.Model):
@@ -7,7 +7,7 @@ class Category(models.Model):
 
 
 class Car(models.Model):
-    driver = models.ForeignKey(DriverUser, related_name='car', blank=True, on_delete=models.SET_NULL, null=True)
+    # driver = models.OneToOneField(DriverProfile, related_name='car', blank=True, on_delete=models.SET_NULL, null=True)
     car_model = models.CharField(max_length=40)
     mileage = models.IntegerField()
     color = models.CharField(max_length=20)

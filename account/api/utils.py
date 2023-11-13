@@ -47,6 +47,6 @@ def send_application_email(first_name, last_name, driver_license, car, email, ac
         fail_silently=False,
     )
 
-# def send_confirm(first_name, last_name, email):
-#     ...
+# # def send_confirm(first_name, last_name, email):
+# #     ...
 

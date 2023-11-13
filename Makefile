@@ -4,7 +4,7 @@ makemigrations:
 	python3 manage.py makemigrations
 migrate:
 	python3 manage.py migrate
-superuser:
+admin:
 	python3 manage.py createsuperuser
 virtual:
 	source venv/bin/activate

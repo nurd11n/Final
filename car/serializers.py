@@ -10,7 +10,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class CarSerializer(serializers.ModelSerializer):
-    driver = serializers.ReadOnlyField(source='driver.name')
+    # driver = serializers.ReadOnlyField(source='driver.name')
     class Meta:
         model = Car
         fields = '__all__'

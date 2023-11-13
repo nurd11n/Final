@@ -1,8 +1,11 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.crypto import get_random_string
+from django.db import models
 import re
+from django.db.models.signals import post_save
+from django.conf import settings
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from car.models import Car
@@ -19,26 +22,40 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_user(self, email, password, **extra_fields):
-        user = self._create_user(email=email, password=password, **extra_fields)
+    def create_user(self, email, password, phone_number, first_name, last_name, **extra_fields):
+        user = self._create_user(
+            email=email,
+            password=password,
+            phone_number=phone_number,
+            first_name=first_name,
+            last_name=last_name,
+            **extra_fields
+        )
         return user
 
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        return self._create_user(email=email, password=password, **extra_fields)
+        return self._create_user(
+            email=email,
+            password=password,
+            phone_number='0507500888',
+            first_name='admin',
+            last_name='admin',
+            **extra_fields
+        )
 
 
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
-    # phone_number = models.CharField(max_length=15)
+    phone_number = models.CharField(max_length=15)
     is_driver = models.BooleanField(default=False)
+    is_user = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=50)
-    # image = models.ImageField(blank=True, upload_to='driver/')
     activation_code = models.CharField(max_length=10, blank=True)
 
     objects = UserManager()
@@ -54,15 +71,41 @@ class User(AbstractUser):
         self.activation_code = code
 
 
-class DriverUser(User):
-    phone_number = models.CharField(max_length=15, unique=True)
-    driver_license = models.CharField(max_length=20)
+# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+# def create_auth_token(sender, instance=None, created=False, **kwargs):
+#     if created:
+#         Token.objects.create(user=instance)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
+    def __str__(self):
+        return self.user.email
+
+    # @receiver(post_save, sender=User)
+    # def create_profile(sender, instance, created, **kwargs):
+    #     print(f'User {instance} was created {created}')
+    #     is_driver = getattr(instance, 'is_driver', False)
+    #     if created and not is_driver:
+    #         UserProfile.objects.create(user=instance)
+
+
+class DriverProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    driver_license = models.CharField(max_length=20, blank=False)
     is_car = models.BooleanField(default=False)
     car = models.OneToOneField(Car, related_name='driver_user_car', on_delete=models.SET_NULL, null=True, blank=True)
     image = models.ImageField(blank=True, upload_to='driver/')
 
     def __str__(self):
-        return f'{self.id} - {self.email} - {self.car}'
+        return f'{self.user.email} - {self.car}'
+
+    # @receiver(post_save, sender=User)
+    # def create_driver_profile(sender, instance, created, **kwargs):
+    #     print(f'Driver {instance} was created {created}')
+    #     is_driver = getattr(instance, 'is_driver', False)
+    #     if created and is_driver:
+    #         DriverProfile.objects.create(user=instance)
 
     def clean(self):
         if self.phone_number and not re.match(r'^\+?[0-9]+$', self.phone_number):
@@ -70,15 +113,12 @@ class DriverUser(User):
             raise ValidationError(_('Invalid phone number format'))
         super().clean()
 
-    # def save(self, *args, **kwargs):
-    #     if self.is_driver == True:
-    #         return DriverUser.objects.create(*args, **kwargs)
-    #     super().save(*args, **kwargs)
-
-# @receiver(post_save, sender=User)
+# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 # def create_profile(sender, instance, created, **kwargs):
-#     print(f'User {instance} was created {created}')
-#     if instance.is_driver:
-#         return DriverUserProfile.objects.create(user=instance)
+#     is_driver = getattr(instance, 'is_driver', False)
+#     if created and not is_driver:
+#         UserProfile.objects.create(user=instance)
+#         print(f'User {instance} was created {created}')
 #     else:
-#         return User.objects.create(user=instance)
+#         DriverProfile.objects.create(user=instance)
+#         print(f'Driver {instance} was created {created}')

@@ -2,4 +2,5 @@ from django.contrib import admin
 from .models import Category, Car
 
 
-admin.register(Car, Category)
+admin.site.register(Car)
+admin.site.register(Category)
