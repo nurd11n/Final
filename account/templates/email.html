@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,18 +12,18 @@
         <div class="card-body">
             <p class="card-text text-center">
                 <strong>{{ text_detail }}</strong>
+            </p>
             <p class="text-center">
                 {{ email }}
             </p>
-            {{ activation_code }}
+            <p>{{ activation_code }}</p>
             <form method="post">
                 <a class="text-center verify-button"
-                href="{{ domain }}{% url 'activate' email activation_code %}">
+                   href="{{ domain }}{% url 'user-activate' email activation_code %}">
                     <button type="button"
                             class="btn">Verify account</button>
                 </a>
             </form>
-            </p>
         </div>
     </div>
 </body>

@@ -1,5 +1,6 @@
 from .serializers import CarSerializer, CategorySerializer
 from rest_framework import viewsets
+from account.permissions import IsDriverProfile
 from .models import Category, Car
 from rest_framework.permissions import AllowAny, IsAdminUser
 
@@ -19,5 +20,5 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class CarViewSet(viewsets.ModelViewSet):
     queryset = Car.objects.all()
     serializer_class = CarSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsDriverProfile]
 

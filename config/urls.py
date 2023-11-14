@@ -38,7 +38,14 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('swagger/', schema_view.with_ui()),
-    path('api/', include("account.api.urls")),
+    path('', include("account.urls")),
     path('', include('car.urls')),
-    # path('', include('chat'))
+    path('', include('review.urls')),
+    path('', include('map.urls')),
+    path('', include('order.urls')),
 ]
+
+urlpatterns += static(
+    settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT
+)

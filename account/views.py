@@ -1,13 +1,12 @@
-from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import get_user_model
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
-from .serializers import (UserSignUpSerializer, UserSerializer, DriverSignUpSerializer,
-                          ChangePasswordSerializer, GiveCarSerializer)
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from .permissions import IsUserProfile, IsDriverProfile
-
+from .serializers import (UserSignUpSerializer, UserSerializer, DriverSignUpSerializer,
+                          ChangePasswordSerializer)
 
 User = get_user_model()
 
@@ -20,7 +19,7 @@ class UserSignUpView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response({
-            'user': UserSerializer(user, context=self.get_serializer_context()).data,
+            'user': UserSignUpSerializer(user, context=self.get_serializer_context()).data,
             'message': "Account successfully registered"
         })
 
@@ -33,7 +32,7 @@ class DriverSignUpView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response({
-            'user': UserSerializer(user, context=self.get_serializer_context()).data,
+            'user': DriverSignUpSerializer(user, context=self.get_serializer_context()).data,
             'message': "Account successfully registered"
         })
 
@@ -89,15 +88,6 @@ class ChangePasswordView(APIView):
             return Response('Password changed successfully', status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class GiveCarViewSet(APIView):
-    permission_classes = [IsAdminUser]
-    def post(self, request):
-        serializer = GiveCarSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response('Car was given', status=200)
 
 
 

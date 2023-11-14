@@ -9,6 +9,7 @@ from .models import Chat
 
 User = get_user_model()
 
+
 class ChatConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self): # подключение

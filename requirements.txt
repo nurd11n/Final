@@ -9,3 +9,6 @@ python-decouple
 folium
 leaflet
 polyline
+beautifulsoup4
+requests
+lxml
