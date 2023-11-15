@@ -9,10 +9,13 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import warnings
 from datetime import timedelta
 from pathlib import Path
 from decouple import config
 import os
+
+from django.core.paginator import UnorderedObjectListWarning
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,7 +47,9 @@ INSTALLED_APPS = [
     #libs
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_filters',
     'drf_yasg',
+    'channels',
     #apps
     'account',
     'car',
@@ -53,8 +58,8 @@ INSTALLED_APPS = [
     'order',
     'review',
     #forms
-    # 'crispy_forms',
-    # 'crispy_bootstrap4'
+    'crispy_forms',
+    'crispy_bootstrap4'
 ]
 
 MIDDLEWARE = [
@@ -153,6 +158,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+warnings.filterwarnings("ignore", message="Pagination may yield inconsistent results", category=UnorderedObjectListWarning)
+
 MEDIA_URL = '/posts/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'posts')
 
@@ -176,6 +183,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 1
 }
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME':  timedelta(days=7),
@@ -190,16 +198,6 @@ SWAGGER_SETTINGS = {
         }
     }
 }
-
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
 
 
 BROKER_URL = 'redis://127.0.0.1:6379/0'
@@ -268,10 +266,9 @@ LOGGING = {
 }
 }
 
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': BASE_DIR / 'cache/',
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+#         'LOCATION': BASE_DIR / 'cache/',
+#     }
+# }

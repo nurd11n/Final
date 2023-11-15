@@ -3,7 +3,8 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
+from review.models import Rating
 from .permissions import IsUserProfile, IsDriverProfile
 from .serializers import (UserSignUpSerializer, UserSerializer, DriverSignUpSerializer,
                           ChangePasswordSerializer)
@@ -40,7 +41,7 @@ class DriverSignUpView(generics.GenericAPIView):
 class ActivationView(APIView):
     def get(self, request, email, activation_code):
         try:
-            user = User.objects.get(email=email, activation_code=activation_code)
+            user = User.objects.filter(email=email, activation_code=activation_code)
             user.is_active = True
             user.activation_code = ""
             user.save()
@@ -80,7 +81,6 @@ class DriverOnlyView(generics.RetrieveAPIView):
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @swagger_auto_schema(request_body=ChangePasswordSerializer)
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
@@ -88,6 +88,24 @@ class ChangePasswordView(APIView):
             return Response('Password changed successfully', status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class RecommendationView(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def get(self, request):
+#         user = request.user
+#
+#         latest_ratings = Rating.objects.filter(user=user).order_by('-created_at')[:5]
+#         if len(latest_ratings) < 10:
+#             latest_ratings = Rating.objects.filter(user=user)
+#
+#         tags = []
+#         for rating in latest_ratings:
+#             film = rating.film
+#             tags += film.tags.all()
+#
+#         return Response(.data)
 
 
 

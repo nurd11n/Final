@@ -20,7 +20,7 @@ def check_currency():
 
 def write_to_json(data):
     with open('dollar.json', 'w') as dollar:
-        json.dump(data, dollar)
+        json.dump(f'Dollar currency: {data}', dollar)
 
 
 def main():

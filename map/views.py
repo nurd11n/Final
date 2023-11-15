@@ -1,11 +1,26 @@
 from django.views.generic import ListView
 from django.views import View
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from django.shortcuts import render, redirect
 from .models import *
+from .serializers import LocationsSerializer, DistancesSerializer
 import googlemaps
 from django.conf import settings
 from .forms import *
 from datetime import datetime
+
+
+class LocationsView(ModelViewSet):
+    queryset = Locations.objects.all()
+    serializer_class = LocationsSerializer
+    permission_classes = [IsAdminUser]
+
+
+class DistancesView(ModelViewSet):
+    queryset = Distances.objects.all()
+    serializer_class = DistancesSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class HomeView(ListView):

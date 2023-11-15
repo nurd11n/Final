@@ -24,7 +24,7 @@ def send_activation_code(email, activation_code):
     )
 
 
-def send_application_email(first_name, last_name, driver_license, email, activation_code):
+def send_application_code(first_name, last_name, driver_license, email, activation_code):
     context = {
         'text_detail': 'New application',
         'first name': first_name,
@@ -32,20 +32,17 @@ def send_application_email(first_name, last_name, driver_license, email, activat
         'driver license': driver_license,
         'email': email,
         'activation code': activation_code,
-        'domain': 'http://localhost:8000',
+        'domain': 'http://127.0.0.1:8000/',
     }
 
-    msg_html = render_to_string('email.html', context)
+    msg_html = render_to_string('driver_email.html', context)
     message = strip_tags(msg_html)
     send_mail(
         'Application for the job',
         message,
         'test@gmail.com',
-        ['taabaldyevnurdin@gmail.com'],
+        [email],
         html_message=msg_html,
         fail_silently=False,
     )
-
-# # def send_confirm(first_name, last_name, email):
-# #     ...
 
